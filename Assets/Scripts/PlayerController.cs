@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,6 +11,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Animator _animator;
     private string _namePar = "isGoing";
     [SerializeField] SpriteRenderer _spriteRenderer;
+    private bool _isGround;
     void Update()
     {
         if (Input.GetKey(KeyCode.A)||Input.GetKey(KeyCode.D))
@@ -33,11 +35,26 @@ public class PlayerController : MonoBehaviour
             transform.Translate(Vector2.right * speed * Time.deltaTime);
             
         }
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space)&&_isGround)
         {
+            
             rb.AddForce(Vector2.up * jumpforce, ForceMode2D.Impulse);
+            
         }
 
-    } 
+    }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag=="Ground")
+        {
+            _isGround=true;
+            
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D other)
+    {
+        _isGround=false;
+    }
 }
