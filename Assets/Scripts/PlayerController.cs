@@ -2,16 +2,22 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
-    public float speed;
-    public Rigidbody2D rb;
-    public float jumpforce;
+    [SerializeField] private float speed;
+    [SerializeField] private Rigidbody2D rb;
+    [SerializeField] private float jumpforce;
     [SerializeField] private Animator _animator;
+    [SerializeField] private Text _countAplLeText;
     private string _namePar = "isGoing";
     [SerializeField] SpriteRenderer _spriteRenderer;
     private bool _isGround;
+    private string _nameParJump="isJump";
+    private string _nameGround="Ground";
+    private string _nameApple="Apple";
+    private int _countApple=0;
     void Update()
     {
         if (Input.GetKey(KeyCode.A)||Input.GetKey(KeyCode.D))
@@ -39,22 +45,35 @@ public class PlayerController : MonoBehaviour
         {
             
             rb.AddForce(Vector2.up * jumpforce, ForceMode2D.Impulse);
-            
+            _animator.SetTrigger(_nameParJump);
         }
 
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag=="Ground")
+        if (collision.gameObject.tag==_nameGround)
         {
             _isGround=true;
             
         }
+        if (collision.gameObject.tag==_nameApple)
+        {
+
+            _countApple++;
+            _countAplLeText.text = _countApple.ToString();
+            Destroy(collision.gameObject);
+        }
+        
+        
     }
 
-    private void OnCollisionExit2D(Collision2D other)
+    private void OnCollisionExit2D(Collision2D collision)
     {
-        _isGround=false;
+        if (collision.gameObject.tag==_nameGround)
+        {
+            _isGround=false;
+            
+        }
     }
 }
